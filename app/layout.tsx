@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google"
+import { Metadata } from "next"
 
 import "./globals.css"
 import { cn } from "@/lib/utils";
@@ -9,6 +10,11 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  title: "HRIS CoreLink",
+  description: "CoreLink is an enterprise-grade Human Resource Information System (HRIS) designed to streamline workforce management, automate compliance, and unify employee data",
+}
 
 export default function RootLayout({
   children,
