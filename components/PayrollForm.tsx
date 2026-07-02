@@ -1,7 +1,7 @@
-// app/payroll/components/PayrollForm.tsx
+// components/PayrollForm.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -23,16 +23,8 @@ const initialFormState: PayrollFormState = {
 };
 
 export default function PayrollForm({ editingPayroll, onSuccess, onCancel }: FormProps) {
-  const [formData, setFormData] = useState<PayrollFormState>(initialFormState);
-
-  // When editingPayroll changes (user clicks edit), load values into the inputs
-  useEffect(() => {
-    if (editingPayroll) {
-      setFormData(editingPayroll);
-    } else {
-      setFormData(initialFormState);
-    }
-  }, [editingPayroll]);
+  // Directly seed initial state using the item passed down by the parent key
+  const [formData, setFormData] = useState<PayrollFormState>(editingPayroll || initialFormState);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

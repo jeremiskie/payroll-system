@@ -25,12 +25,17 @@ export default function PayrollTable({ data, onEdit, onDelete }: TableProps) {
     );
   }
 
-  // 2. Calculate Math for Slicing Data
-  const totalPages = Math.ceil(data.length / recordsPerPage);
-  const indexOfLastRecord = currentPage * recordsPerPage;
+  // 2. Calculate Math Safely
+  const totalPages = Math.ceil(data.length / recordsPerPage) || 1;
+  
+  // FIX: If currentPage is greater than totalPages (like when searching shrinks the list),
+  // clamp it down to totalPages. This prevents empty screens without using useEffect.
+  const activePage = Math.min(currentPage, totalPages);
+
+  const indexOfLastRecord = activePage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   
-  // This is the array of exactly 10 items (or less) for the current page
+  // This is the array of exactly 10 items (or less) for the active page
   const currentRecords = data.slice(indexOfFirstRecord, indexOfLastRecord);
 
   return (
@@ -81,14 +86,14 @@ export default function PayrollTable({ data, onEdit, onDelete }: TableProps) {
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-2">
           <p className="text-sm text-muted-foreground">
-            Page <strong>{currentPage}</strong> of {totalPages} ({data.length} total entries)
+            Page <strong>{activePage}</strong> of {totalPages} ({data.length} total entries)
           </p>
           <div className="flex space-x-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
+              disabled={activePage === 1}
             >
               Previous
             </Button>
@@ -96,7 +101,7 @@ export default function PayrollTable({ data, onEdit, onDelete }: TableProps) {
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
+              disabled={activePage === totalPages}
             >
               Next
             </Button>

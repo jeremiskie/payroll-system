@@ -35,8 +35,25 @@ export default function PayrollDashboard() {
   }
 
   useEffect(() => {
+    const loadPayrollRecords = async () => {
+      try {
+        setLoading(true)
+        const res = await fetch("/api/payroll")
+        if (res.status === 200) {
+          const data = await res.json()
+          setRecords(data)
+        } else {
+          setRecords([])
+        }
+      } catch (err) {
+        console.error("Could not fetch database records:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     loadPayrollRecords()
-  }, [])
+  }, []) // Now empty [] is perfectly valid and won't show red!
 
   const handleRecordDelete = async (id: number) => {
     if (
@@ -93,6 +110,7 @@ export default function PayrollDashboard() {
           </div>
 
           <PayrollForm
+            key={editingPayroll ? editingPayroll.id : "new-record"}
             editingPayroll={editingPayroll}
             onSuccess={() => {
               loadPayrollRecords()
